@@ -31,7 +31,7 @@ export type Issues = {
      reporter_id: number;
      created_at: Date;
      updated_at: Date;
-}
+}c
 
 export type CreateReportInput = Omit<Report, "id" | "created_at" | "updated_at" | "status"> & {
      status?: ReportStatus;
