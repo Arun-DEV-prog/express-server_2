@@ -207,6 +207,29 @@ class IssuesService {
             throw error;
         }
     }
+
+    async delete(id: number): Promise<void> {
+        try {
+            // Check if issue exists
+            const issues = await sql<Issues[]>`
+                SELECT id
+                FROM issues
+                WHERE id = ${id}
+            `;
+
+            if (!issues || issues.length === 0) {
+                throw new Error("Issue not found");
+            }
+
+            // Delete the issue
+            await sql`
+                DELETE FROM issues
+                WHERE id = ${id}
+            `;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 export default new IssuesService();

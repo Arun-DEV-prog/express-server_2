@@ -272,3 +272,55 @@ export const updateIssue = async (req: Request, res: Response) => {
         );
     }
 };
+
+export const deleteIssue = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const userRole = req.user?.role;
+
+        // Check if user is maintainer
+        if (userRole !== "maintainer") {
+            return sendResponse(
+                res,
+                { message: "Access denied. Only maintainers can delete issues", error: true },
+                403
+            );
+        }
+
+        // Validate ID
+        const issueId = parseInt(id, 10);
+        if (isNaN(issueId) || issueId <= 0) {
+            return sendResponse(
+                res,
+                { message: "Invalid issue ID. Must be a positive number", error: true },
+                400
+            );
+        }
+
+        // Delete the issue
+        try {
+            await IssuesService.delete(issueId);
+        } catch (error: any) {
+            if (error.message === "Issue not found") {
+                return sendResponse(
+                    res,
+                    { message: "Issue not found", error: true },
+                    404
+                );
+            }
+            throw error;
+        }
+
+        return sendResponse(
+            res,
+            { message: "Issue deleted successfully" },
+            200
+        );
+    } catch (error: any) {
+        return sendResponse(
+            res,
+            { message: error.message || "Failed to delete issue", error: true },
+            500
+        );
+    }
+};
