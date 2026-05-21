@@ -26,6 +26,29 @@ class AuthService{
        return result[0];
   }
 
+  async loginUser(email: string, password: string) {
+    const result = await sql`
+      SELECT id, name, email, password, role, created_at, updated_at
+      FROM users
+      WHERE email = ${email}
+    `;
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    const user = result[0];
+    const isPasswordValid = await this.comparePassword(password, user.password);
+
+    if (!isPasswordValid) {
+      return null;
+    }
+
+    // Return user without password
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
+
 }
 
 
