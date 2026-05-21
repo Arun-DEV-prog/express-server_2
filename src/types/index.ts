@@ -38,3 +38,13 @@ export type CreateReportInput = Omit<Issues, "id" | "created_at" | "updated_at" 
 }
 
 export type UpdateReportInput = Partial<Omit<Issues, "id" | "created_at" | "updated_at" | "reporter_id">>
+
+export type IssueReporter = {
+     id: number;
+     name: string;
+     role: Role;
+}
+
+export type IssueWithReporter = Omit<Issues, "reporter_id"> & {
+     reporter: IssueReporter;
+}

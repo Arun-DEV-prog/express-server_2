@@ -1,6 +1,6 @@
 
 import { sql } from "../../DB/index";
-import type { Issues, CreateReportInput } from "../../types/index";
+import type { Issues, CreateReportInput, ReportStatus, ReportType, IssueWithReporter, IssueReporter } from "../../types/index";
 
 class IssuesService {
     async create(data: CreateReportInput): Promise<Issues> {
@@ -16,6 +16,149 @@ class IssuesService {
             }
             
             return result[0];
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getAll(
+        sort: "newest" | "oldest" = "newest",
+        type?: ReportType,
+        status?: ReportStatus
+    ): Promise<IssueWithReporter[]> {
+        try {
+            // Build query with dynamic filters
+            let issues: Issues[];
+
+            if (type && status) {
+                issues = sort === 'oldest'
+                    ? await sql<Issues[]>`
+                        SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+                        FROM issues
+                        WHERE type = ${type} AND status = ${status}
+                        ORDER BY created_at ASC
+                    `
+                    : await sql<Issues[]>`
+                        SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+                        FROM issues
+                        WHERE type = ${type} AND status = ${status}
+                        ORDER BY created_at DESC
+                    `;
+            } else if (type) {
+                issues = sort === 'oldest'
+                    ? await sql<Issues[]>`
+                        SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+                        FROM issues
+                        WHERE type = ${type}
+                        ORDER BY created_at ASC
+                    `
+                    : await sql<Issues[]>`
+                        SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+                        FROM issues
+                        WHERE type = ${type}
+                        ORDER BY created_at DESC
+                    `;
+            } else if (status) {
+                issues = sort === 'oldest'
+                    ? await sql<Issues[]>`
+                        SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+                        FROM issues
+                        WHERE status = ${status}
+                        ORDER BY created_at ASC
+                    `
+                    : await sql<Issues[]>`
+                        SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+                        FROM issues
+                        WHERE status = ${status}
+                        ORDER BY created_at DESC
+                    `;
+            } else {
+                issues = sort === 'oldest'
+                    ? await sql<Issues[]>`
+                        SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+                        FROM issues
+                        ORDER BY created_at ASC
+                    `
+                    : await sql<Issues[]>`
+                        SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+                        FROM issues
+                        ORDER BY created_at DESC
+                    `;
+            }
+
+            if (!issues || issues.length === 0) {
+                return [];
+            }
+
+            // Get unique reporter IDs
+            const reporterIds = [...new Set(issues.map(i => i.reporter_id))];
+
+            // Fetch all reporters in batch query
+            let reporters: IssueReporter[] = [];
+            if (reporterIds.length > 0) {
+                reporters = await sql<IssueReporter[]>`
+                    SELECT id, name, role
+                    FROM users
+                    WHERE id IN (${reporterIds.join(',')})
+                `;
+            }
+
+            // Create a map for easy lookup
+            const reporterMap = new Map(reporters.map(r => [r.id, r]));
+
+            // Combine issues with reporter data
+            return issues.map(issue => ({
+                id: issue.id,
+                title: issue.title,
+                description: issue.description,
+                type: issue.type,
+                status: issue.status,
+                reporter: reporterMap.get(issue.reporter_id)!,
+                created_at: issue.created_at,
+                updated_at: issue.updated_at,
+            }));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getById(id: number): Promise<IssueWithReporter | null> {
+        try {
+            const issues = await sql<Issues[]>`
+                SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+                FROM issues
+                WHERE id = ${id}
+            `;
+
+            if (!issues || issues.length === 0) {
+                return null;
+            }
+
+            const issue = issues[0];
+
+            // Fetch reporter details
+            const reporters = await sql<IssueReporter[]>`
+                SELECT id, name, role
+                FROM users
+                WHERE id = ${issue.reporter_id}
+            `;
+
+            if (!reporters || reporters.length === 0) {
+                throw new Error("Reporter not found");
+            }
+
+            const reporter = reporters[0];
+
+            return {
+                id: issue.id,
+                title: issue.title,
+                description: issue.description,
+                type: issue.type,
+                status: issue.status,
+                reporter,
+                created_at: issue.created_at,
+                updated_at: issue.updated_at,
+            };
         } catch (error) {
             throw error;
         }
