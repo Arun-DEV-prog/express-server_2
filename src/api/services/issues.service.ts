@@ -163,6 +163,50 @@ class IssuesService {
             throw error;
         }
     }
+
+    async update(
+        id: number,
+        data: Partial<Pick<Issues, "title" | "description" | "type" | "status">>
+    ): Promise<Issues> {
+        try {
+            // Get current issue to ensure it exists
+            const currentIssues = await sql<Issues[]>`
+                SELECT id, title, description, type, status, reporter_id, created_at, updated_at
+                FROM issues
+                WHERE id = ${id}
+            `;
+
+            if (!currentIssues || currentIssues.length === 0) {
+                throw new Error("Issue not found");
+            }
+
+            const current = currentIssues[0];
+
+            // Build update object with existing values as defaults
+            const updateData = {
+                title: data.title ?? current.title,
+                description: data.description ?? current.description,
+                type: data.type ?? current.type,
+                status: data.status ?? current.status,
+            };
+
+            // Update the issue
+            const result = await sql<Issues[]>`
+                UPDATE issues
+                SET title = ${updateData.title}, description = ${updateData.description}, type = ${updateData.type}, status = ${updateData.status}, updated_at = NOW()
+                WHERE id = ${id}
+                RETURNING id, title, description, type, status, reporter_id, created_at, updated_at
+            `;
+
+            if (!result || result.length === 0) {
+                throw new Error("Failed to update issue");
+            }
+
+            return result[0];
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 export default new IssuesService();
