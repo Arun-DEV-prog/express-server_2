@@ -13,7 +13,7 @@ export type User={
 }
 
 
-export type RUser=Omit<User, "id" | "update_at" | "created_at"  | "password">
+export type RUser=Omit<User, "id" | "created_at" | "updated_at"  | "password">
 
 
 export const reportType = ["bug", "feature_request"] as const;

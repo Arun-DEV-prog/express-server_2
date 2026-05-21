@@ -3,7 +3,7 @@ import jwt, { type JwtPayload } from "jsonwebtoken"
 import type { RUser } from "../types";
 
 export const verifyToken=(token: string, type: "access" | "refress")=>{
-     const secret= type==="refress" ? config.refres_token_secret : "";
+     const secret= type==="refress" ? config.refres_token_secret : config.access_token_secret;
      const decoded= jwt.verify(token, secret) as JwtPayload
      return decoded;
 }
