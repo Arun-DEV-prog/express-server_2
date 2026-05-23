@@ -1,7 +1,7 @@
 
-import app from "./app";
-import { config } from "./config/config";
-import { initDB } from "./DB";
+import app from "./app.js";
+import { config } from "./config/config.js";
+import { initDB } from "./DB/index.js";
 
 const main=async()=>{
      await initDB();

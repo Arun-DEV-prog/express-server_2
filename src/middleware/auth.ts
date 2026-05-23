@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { sendResponse } from "../utils/sendResponse";
-import { verifyToken } from "../utils/jwt";
+import { sendResponse } from "../utils/sendResponse.js";
+import { verifyToken } from "../utils/jwt.js";
 
 import type { JwtPayload } from "jsonwebtoken";
 

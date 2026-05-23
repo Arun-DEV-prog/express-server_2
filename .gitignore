@@ -3,3 +3,7 @@ node_modules
 .env.local
 .env.*.local
 .env.*.js
+.vercel
+dist
+api
+vercel.json

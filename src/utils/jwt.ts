@@ -1,6 +1,6 @@
-import { config } from "../config/config"
+import { config } from "../config/config.js"
 import jwt, { type JwtPayload } from "jsonwebtoken"
-import type { RUser } from "../types";
+import type { RUser } from "../types/index.js";
 
 export const verifyToken=(token: string, type: "access" | "refress")=>{
      const secret= type==="refress" ? config.refres_token_secret : config.access_token_secret;

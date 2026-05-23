@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { config } from "../config/config";
+import { config } from "../config/config.js";
 
 
 const globalErrorHandler=(err: unknown, req: Request, res: Response, next: NextFunction)=>{

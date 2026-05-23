@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createIssues, getIssues, getIssueById, updateIssue, deleteIssue } from "../controllers/issues.controller";
-import { auth } from "../../middleware/auth";
+import { createIssues, getIssues, getIssueById, updateIssue, deleteIssue } from "../controllers/issues.controller.js";
+import { auth } from "../../middleware/auth.js";
 
 const router = Router();
 

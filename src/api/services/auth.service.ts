@@ -1,6 +1,6 @@
  import bcrypt from "bcrypt"
-import type { RUser } from "../../types";
-import { sql } from "../../DB";
+import type { RUser } from "../../types/index.js";
+import { sql } from "../../DB/index.js";
 class AuthService{
 
     private async hashPassword(password:string):Promise<string>{
@@ -33,11 +33,14 @@ class AuthService{
       WHERE email = ${email}
     `;
 
-    if (result.length === 0) {
+    if (!result || result.length === 0) {
       return null;
     }
 
-    const user = result[0];
+    const user = result[0] as any;
+    if (!user || !user.password) {
+      return null;
+    }
     const isPasswordValid = await this.comparePassword(password, user.password);
 
     if (!isPasswordValid) {

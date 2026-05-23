@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
-import { sendResponse } from "../../utils/sendResponse";
-import IssuesService from "../services/issues.service";
-import type { Issues, ReportType, ReportStatus } from "../../types/index";
-import { sql } from "../../DB/index";
+import { sendResponse } from "../../utils/sendResponse.js";
+import IssuesService from "../services/issues.service.js";
+import type { Issues, ReportType, ReportStatus } from "../../types/index.js";
+import { sql } from "../../DB/index.js";
 
 export const createIssues = async (req: Request, res: Response) => {
     try {
@@ -121,6 +121,13 @@ export const getIssueById = async (req: Request, res: Response) => {
         const { id } = req.params;
 
         // Validate ID is a number
+        if (typeof id !== 'string') {
+            return sendResponse(
+                res,
+                { message: "Invalid issue ID", error: true },
+                400
+            );
+        }
         const issueId = parseInt(id, 10);
         if (isNaN(issueId) || issueId <= 0) {
             return sendResponse(
@@ -163,6 +170,13 @@ export const updateIssue = async (req: Request, res: Response) => {
         const userRole = req.user?.role;
 
         // Validate ID
+        if (typeof id !== 'string') {
+            return sendResponse(
+                res,
+                { message: "Invalid issue ID", error: true },
+                400
+            );
+        }
         const issueId = parseInt(id, 10);
         if (isNaN(issueId) || issueId <= 0) {
             return sendResponse(
@@ -215,11 +229,11 @@ export const updateIssue = async (req: Request, res: Response) => {
         }
 
         // Get the issue to check permissions
-        const issues = await sql<Issues[]>`
+        const issues = (await sql`
             SELECT id, title, description, type, status, reporter_id, created_at, updated_at
             FROM issues
             WHERE id = ${issueId}
-        `;
+        `) as Issues[];
 
         if (!issues || issues.length === 0) {
             return sendResponse(
@@ -230,6 +244,14 @@ export const updateIssue = async (req: Request, res: Response) => {
         }
 
         const issue = issues[0];
+        
+        if (!issue) {
+            return sendResponse(
+                res,
+                { message: "Issue not found", error: true },
+                404
+            );
+        }
 
         // Check access control
         // Maintainer can update any issue
@@ -288,6 +310,13 @@ export const deleteIssue = async (req: Request, res: Response) => {
         }
 
         // Validate ID
+        if (typeof id !== 'string') {
+            return sendResponse(
+                res,
+                { message: "Invalid issue ID", error: true },
+                400
+            );
+        }
         const issueId = parseInt(id, 10);
         if (isNaN(issueId) || issueId <= 0) {
             return sendResponse(

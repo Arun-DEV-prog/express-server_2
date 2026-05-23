@@ -1,4 +1,4 @@
-import { sql } from "./index"
+import { sql } from "./index.js"
 
 
 export const createSchema=async()=>{

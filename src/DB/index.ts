@@ -1,6 +1,6 @@
 import { neon } from "@neondatabase/serverless";
-import { config } from "../config/config";
-import { createSchema } from "./schema";
+import { config } from "../config/config.js";
+import { createSchema } from "./schema.js";
 
 export const sql=neon(config.database_url)
 

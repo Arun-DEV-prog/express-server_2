@@ -1,9 +1,9 @@
 
 import express, { type Application, type Request, type Response } from "express"
-import globalErrorHandler from "./middleware/globalErrorHandler";
+import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import cookieParser from "cookie-parser";
-import authRoutes from  "./api/routes/auth.route"
-import issueRoutes from "./api/routes/issues.route"
+import authRoutes from  "./api/routes/auth.route.js"
+import issueRoutes from "./api/routes/issues.route.js"
 const app: Application =express()
 
 app.use(express.json());

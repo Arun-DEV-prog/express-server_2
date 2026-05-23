@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import authService from "../services/auth.service";
-import { sendResponse } from "../../utils/sendResponse";
-import { signToken } from "../../utils/jwt";
+import authService from "../services/auth.service.js";
+import { sendResponse } from "../../utils/sendResponse.js";
+import { signToken } from "../../utils/jwt.js";
 
 
 export const signup = async (req: Request, res: Response): Promise<void> => {
