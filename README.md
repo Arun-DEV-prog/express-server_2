@@ -1,302 +1,505 @@
 # Express Server 2
 
-A modern, production-ready Express.js API server built with TypeScript. This application provides comprehensive authentication and issue management functionality with JWT-based security.
+A modern, production-ready Express.js API server built with TypeScript. This application provides comprehensive authentication and issue management functionality with JWT-based security, deployed on Vercel.
 
-Vercel Deploy Link: https://express-server-2-five.vercel.app/
+## 🚀 Live Deployment
 
-## Features
+**Live URL:** [https://express-server-2-five.vercel.app](https://express-server-2-five.vercel.app)
 
-- ✅ User authentication (Sign up & Login)
-- ✅ JWT-based authorization
-- ✅ Issue management (CRUD operations)
-- ✅ PostgreSQL database integration
-- ✅ Global error handling
-- ✅ Cookie-based session management
-- ✅ Password encryption with bcrypt
-- ✅ TypeScript for type safety
+All API endpoints are accessible at the live URL above.
 
-## Tech Stack
+---
 
-- **Runtime**: Node.js
-- **Framework**: Express.js 5.x
-- **Language**: TypeScript 6.x
-- **Database**: PostgreSQL (Neon Database)
-- **Authentication**: JWT (JSON Web Tokens)
-- **Security**: Bcrypt for password hashing
-- **Development**: tsx with watch mode
+## ✨ Features
 
-## Prerequisites
+- ✅ **User Authentication** - Sign up, login, and logout functionality
+- ✅ **JWT Authorization** - Secure API endpoints with JWT tokens
+- ✅ **Issue Management** - Full CRUD operations for issues (Create, Read, Update, Delete)
+- ✅ **Role-Based Access Control** - Contributor and Maintainer roles
+- ✅ **PostgreSQL Database** - Persistent data storage with Neon Database
+- ✅ **Password Security** - Bcrypt encryption for passwords
+- ✅ **Global Error Handling** - Centralized error handling middleware
+- ✅ **Request Validation** - Input validation for all endpoints
+- ✅ **Type Safety** - Full TypeScript implementation
 
-Before you begin, ensure you have the following installed:
+---
 
-- Node.js (v18 or higher)
-- npm or yarn
-- PostgreSQL database (or Neon Database account)
+## 🛠️ Tech Stack
 
-## Installation
+| Category | Technology |
+|----------|-----------|
+| **Runtime** | Node.js (v18+) |
+| **Framework** | Express.js 5.x |
+| **Language** | TypeScript 6.x |
+| **Database** | PostgreSQL (Neon Serverless) |
+| **Authentication** | JWT (JSON Web Tokens) |
+| **Password Hashing** | Bcrypt |
+| **HTTP Client** | Cookie Parser, CORS |
+| **Deployment** | Vercel (Serverless) |
+| **Development** | tsx (TypeScript execution) |
 
-1. Clone the repository:
+---
+
+## 📋 Prerequisites
+
+Before setting up the project, ensure you have:
+
+- Node.js (v18 or higher) - [Download](https://nodejs.org/)
+- npm or yarn package manager
+- PostgreSQL database (or [Neon Database](https://neon.tech) free account)
+- Git for version control
+
+---
+
+## 🔧 Setup Steps
+
+### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Arun-DEV-prog/express-server_2.git
 cd express-server_2
 ```
 
-2. Install dependencies:
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-3. Create a `.env` file in the root directory:
+### 3. Create Environment Variables
+
+Create a `.env` file in the root directory:
 
 ```env
 PORT=5000
 NODE_ENV=development
-DATABASE_URL=your_postgresql_connection_string
-JWT_SECRET=your_jwt_secret_key
+DATABASE_URL=postgresql://user:password@host:port/dbname
+JWT_SECRET=your_super_secret_jwt_key_here
 ```
 
-## Running the Application
+**Environment Variables Explanation:**
+- `PORT` - Server port (default: 5000)
+- `NODE_ENV` - Environment (development/production)
+- `DATABASE_URL` - PostgreSQL connection string
+- `JWT_SECRET` - Secret key for JWT token generation
 
-### Development Mode
+### 4. Database Setup
 
-Start the development server with hot reload:
+The database schema is automatically created on first run. Tables include:
+- `users` - User accounts with authentication
+- `issues` - Issue tracking and management
 
+### 5. Run the Application
+
+**Development Mode (with hot reload):**
 ```bash
 npm run dev
 ```
 
-The server will start on `http://localhost:5000` (or the port specified in your `.env` file).
-
-### Production Build
-
+**Production Build:**
 ```bash
 npm run build
 npm start
 ```
 
-## Project Structure
-
-```
-express-server_2/
-├── src/
-│   ├── api/
-│   │   ├── controllers/
-│   │   │   ├── auth.controller.ts      # Authentication logic
-│   │   │   └── issues.controller.ts    # Issues management logic
-│   │   ├── routes/
-│   │   │   ├── auth.route.ts           # Auth endpoints
-│   │   │   └── issues.route.ts         # Issues endpoints
-│   │   └── services/
-│   │       ├── auth.service.ts         # Auth business logic
-│   │       └── issues.service.ts       # Issues business logic
-│   ├── config/
-│   │   └── config.ts                   # Configuration management
-│   ├── DB/
-│   │   ├── index.ts                    # Database connection
-│   │   └── schema.ts                   # Database schema
-│   ├── middleware/
-│   │   ├── auth.ts                     # JWT authentication middleware
-│   │   └── globalErrorHandler.ts       # Global error handling
-│   ├── types/
-│   │   └── index.ts                    # TypeScript type definitions
-│   ├── utils/
-│   │   ├── jwt.ts                      # JWT utilities
-│   │   └── sendResponse.ts             # Response formatting utility
-│   ├── app.ts                          # Express app configuration
-│   └── server.ts                       # Server entry point
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
-## API Endpoints
-
-### Base URL
-
-```
-http://localhost:5000
-```
-
-### Health Check
-
-#### Get Server Status
-
-```
-GET /
-```
-
-**Response:**
-
-```
-Server is Running
-```
+The server will start on `http://localhost:5000`
 
 ---
 
-## Authentication Endpoints
+## 📡 API Endpoints
 
-### Base Path: `/api/auth`
+### Base URLs
 
-#### 1. User Sign Up
+- **Local Development:** `http://localhost:5000`
+- **Production:** `https://express-server-2-five.vercel.app`
 
-Create a new user account.
+### Health Check
 
-**Endpoint:**
+#### Server Status
+```
+GET /
+```
+**Response:** `Server is Running`
 
+---
+
+### 🔐 Authentication Endpoints (`/api/auth`)
+
+#### Sign Up
 ```
 POST /api/auth/signup
 ```
-
 **Request Body:**
-
 ```json
 {
-  "email": "user@example.com",
+  "name": "John Doe",
+  "email": "john@example.com",
   "password": "securePassword123",
-  "name": "John Doe"
+  "role": "contributor"
 }
 ```
-
-**Response (Success - 201):**
-
+**Response (201):**
 ```json
 {
   "success": true,
   "message": "User registered successfully",
   "data": {
-    "id": "user_id",
-    "email": "user@example.com",
-    "name": "John Doe"
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "contributor",
+    "created_at": "2026-05-23T10:30:00Z",
+    "updated_at": "2026-05-23T10:30:00Z"
   }
 }
 ```
 
-**Response (Error - 400):**
-
-```json
-{
-  "success": false,
-  "message": "User already exists"
-}
-```
-
----
-
-#### 2. User Login
-
-Authenticate user and receive JWT token.
-
-**Endpoint:**
-
+#### Login
 ```
 POST /api/auth/login
 ```
-
 **Request Body:**
-
 ```json
 {
-  "email": "user@example.com",
+  "email": "john@example.com",
   "password": "securePassword123"
 }
 ```
-
-**Response (Success - 200):**
-
+**Response (200):**
 ```json
 {
   "success": true,
   "message": "Login successful",
   "data": {
-    "id": "user_id",
-    "email": "user@example.com",
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "contributor",
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   }
 }
 ```
 
-**Response (Error - 401):**
-
-```json
-{
-  "success": false,
-  "message": "Invalid email or password"
-}
-```
-
 ---
 
-## Issues Endpoints
+### 📝 Issue Management Endpoints (`/api/issues`)
 
-### Base Path: `/api`
-
-#### 1. Get All Issues
-
-Retrieve all issues from the system.
-
-**Endpoint:**
-
+#### Get All Issues
 ```
 GET /api/issues
 ```
-
 **Query Parameters:**
+- `sort` - `newest` or `oldest` (default: newest)
+- `type` - `bug` or `feature_request`
+- `status` - `open`, `in_progress`, or `resolved`
 
-- Optional pagination parameters
+**Example:** `GET /api/issues?sort=newest&type=bug&status=open`
 
-**Response (Success - 200):**
-
+**Response (200):**
 ```json
 {
   "success": true,
   "message": "Issues retrieved successfully",
   "data": [
     {
-      "id": "issue_1",
-      "title": "Bug in login",
-      "description": "Login button not working",
+      "id": 1,
+      "title": "Login button not working",
+      "description": "The login button doesn't respond to clicks",
+      "type": "bug",
       "status": "open",
-      "createdAt": "2026-05-22T10:30:00Z",
-      "updatedAt": "2026-05-22T10:30:00Z"
+      "reporter": {
+        "id": 1,
+        "name": "John Doe",
+        "role": "contributor"
+      },
+      "created_at": "2026-05-23T10:30:00Z",
+      "updated_at": "2026-05-23T10:30:00Z"
     }
   ]
 }
 ```
 
----
-
-#### 2. Get Issue by ID
-
-Retrieve a specific issue by its ID.
-
-**Endpoint:**
-
+#### Get Issue by ID
 ```
 GET /api/issues/:id
 ```
+**Parameters:** `id` (number) - Issue ID
 
-**Parameters:**
-
-- `id` (string, required) - The issue ID
-
-**Response (Success - 200):**
-
+**Response (200):**
 ```json
 {
   "success": true,
   "message": "Issue retrieved successfully",
   "data": {
-    "id": "issue_1",
-    "title": "Bug in login",
-    "description": "Login button not working",
+    "id": 1,
+    "title": "Login button not working",
+    "description": "The login button doesn't respond to clicks",
+    "type": "bug",
     "status": "open",
-    "createdAt": "2026-05-22T10:30:00Z",
-    "updatedAt": "2026-05-22T10:30:00Z"
+    "reporter": {
+      "id": 1,
+      "name": "John Doe",
+      "role": "contributor"
+    },
+    "created_at": "2026-05-23T10:30:00Z",
+    "updated_at": "2026-05-23T10:30:00Z"
   }
 }
 ```
+
+#### Create Issue
+```
+POST /api/issues
+```
+**Headers:** `Authorization: Bearer <jwt_token>`
+
+**Request Body:**
+```json
+{
+  "title": "Login button not working",
+  "description": "The login button doesn't respond to clicks on mobile devices",
+  "type": "bug"
+}
+```
+**Response (201):**
+```json
+{
+  "success": true,
+  "message": "Issue created successfully",
+  "data": {
+    "id": 2,
+    "title": "Login button not working",
+    "description": "The login button doesn't respond to clicks",
+    "type": "bug",
+    "status": "open",
+    "reporter_id": 1,
+    "created_at": "2026-05-23T11:00:00Z",
+    "updated_at": "2026-05-23T11:00:00Z"
+  }
+}
+```
+
+#### Update Issue
+```
+PATCH /api/issues/:id
+```
+**Headers:** `Authorization: Bearer <jwt_token>`
+
+**Request Body (any field is optional):**
+```json
+{
+  "title": "Updated title",
+  "description": "Updated description",
+  "type": "feature_request",
+  "status": "in_progress"
+}
+```
+**Response (200):** Updated issue object
+
+#### Delete Issue
+```
+DELETE /api/issues/:id
+```
+**Headers:** `Authorization: Bearer <jwt_token>`
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Issue deleted successfully"
+}
+```
+
+---
+
+## 🗄️ Database Schema
+
+### Users Table
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(50) NOT NULL DEFAULT 'contributor',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Columns:**
+- `id` - Unique user identifier
+- `name` - User's full name
+- `email` - Unique email address
+- `password` - Bcrypt-hashed password
+- `role` - `contributor` or `maintainer`
+- `created_at` - Account creation timestamp
+- `updated_at` - Last update timestamp
+
+### Issues Table
+```sql
+CREATE TABLE issues (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(150) NOT NULL,
+  description TEXT NOT NULL,
+  type VARCHAR(50) NOT NULL,
+  status VARCHAR(50) NOT NULL DEFAULT 'open',
+  reporter_id INTEGER NOT NULL REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Columns:**
+- `id` - Unique issue identifier
+- `title` - Issue title (max 150 chars)
+- `description` - Detailed description (min 20 chars)
+- `type` - `bug` or `feature_request`
+- `status` - `open`, `in_progress`, or `resolved`
+- `reporter_id` - Foreign key to users table
+- `created_at` - Issue creation timestamp
+- `updated_at` - Last update timestamp
+
+---
+
+## 📁 Project Structure
+
+```
+express-server_2/
+├── src/
+│   ├── api/
+│   │   ├── controllers/
+│   │   │   ├── auth.controller.ts       # Auth endpoint handlers
+│   │   │   └── issues.controller.ts     # Issues endpoint handlers
+│   │   ├── routes/
+│   │   │   ├── auth.route.ts            # Auth route definitions
+│   │   │   └── issues.route.ts          # Issues route definitions
+│   │   └── services/
+│   │       ├── auth.service.ts          # Auth business logic
+│   │       └── issues.service.ts        # Issues business logic
+│   ├── config/
+│   │   └── config.ts                    # Configuration & env variables
+│   ├── DB/
+│   │   ├── index.ts                     # Database connection setup
+│   │   └── schema.ts                    # Database schema initialization
+│   ├── middleware/
+│   │   ├── auth.ts                      # JWT authentication middleware
+│   │   └── globalErrorHandler.ts        # Global error handling
+│   ├── types/
+│   │   └── index.ts                     # TypeScript type definitions
+│   ├── utils/
+│   │   ├── jwt.ts                       # JWT token utilities
+│   │   └── sendResponse.ts              # Response formatting utility
+│   ├── app.ts                           # Express app configuration
+│   └── server.ts                        # Server entry point
+├── dist/                                # Compiled JavaScript (generated)
+├── api/                                 # Vercel serverless handler (generated)
+├── package.json                         # Project dependencies
+├── tsconfig.json                        # TypeScript configuration
+├── vercel.json                          # Vercel deployment config
+├── .env.example                         # Environment variables template
+└── README.md                            # This file
+```
+
+---
+
+## 🔐 Authentication
+
+The API uses JWT (JSON Web Tokens) for authentication:
+
+1. User logs in with email and password
+2. Server returns a JWT token
+3. Include token in Authorization header: `Authorization: Bearer <token>`
+4. Token is verified by middleware before accessing protected endpoints
+
+**Role-Based Permissions:**
+- **Contributor** - Can create issues, view all issues, update/delete own issues
+- **Maintainer** - Can manage all issues, update/delete any issue
+
+---
+
+## 🚢 Deployment
+
+### Vercel Deployment
+
+This project is configured for Vercel serverless deployment:
+
+1. **GitHub Connection** - Connected to Vercel via GitHub
+2. **Auto Deployment** - Pushes to main branch trigger automatic deployment
+3. **Environment Variables** - Set in Vercel dashboard
+4. **Build Command** - `npm run build` (compiles TypeScript)
+5. **Runtime** - Node.js with serverless functions
+
+**Deployed at:** [https://express-server-2-five.vercel.app](https://express-server-2-five.vercel.app)
+
+---
+
+## 📝 Scripts
+
+```bash
+# Development with hot reload
+npm run dev
+
+# Build TypeScript to JavaScript
+npm run build
+
+# Start production server
+npm start
+
+# Run tests
+npm test
+```
+
+---
+
+## ⚠️ Error Handling
+
+All endpoints return structured error responses:
+
+```json
+{
+  "success": false,
+  "message": "Error description",
+  "error": true
+}
+```
+
+**Common HTTP Status Codes:**
+- `200` - OK
+- `201` - Created
+- `400` - Bad Request (validation error)
+- `401` - Unauthorized (authentication required)
+- `403` - Forbidden (insufficient permissions)
+- `404` - Not Found
+- `500` - Internal Server Error
+
+---
+
+## 📄 License
+
+ISC
+
+---
+
+## 👨‍💻 Author
+
+Arun DEV prog
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+---
+
+## 📧 Support
+
+For issues or questions, please create an issue in the GitHub repository.
 
 **Response (Error - 404):**
 
