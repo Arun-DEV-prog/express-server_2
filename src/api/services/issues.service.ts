@@ -27,102 +27,67 @@ class IssuesService {
         status?: ReportStatus
     ): Promise<IssueWithReporter[]> {
         try {
-            // Build query with dynamic filters using JOIN to get reporter info
             let queryResult: any[] = [];
+            const orderClause = sort === 'oldest' ? 'ASC' : 'DESC';
 
+            // Use template literals with conditional logic
             if (type && status) {
-                queryResult = sort === 'oldest'
-                    ? (await sql`
-                        SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
-                               u.id as reporter_id_u, u.name, u.role
-                        FROM issues i
-                        LEFT JOIN users u ON i.reporter_id = u.id
-                        WHERE i.type = ${type} AND i.status = ${status}
-                        ORDER BY i.created_at ASC
-                    `) as any[]
-                    : (await sql`
-                        SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
-                               u.id as reporter_id_u, u.name, u.role
-                        FROM issues i
-                        LEFT JOIN users u ON i.reporter_id = u.id
-                        WHERE i.type = ${type} AND i.status = ${status}
-                        ORDER BY i.created_at DESC
-                    `) as any[];
+                queryResult = (await sql`
+                    SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
+                           u.id as reporter_id_u, u.name, u.role
+                    FROM issues i
+                    LEFT JOIN users u ON i.reporter_id = u.id
+                    WHERE i.type = ${type} AND i.status = ${status}
+                    ORDER BY i.created_at ${orderClause}
+                `) as any[];
             } else if (type) {
-                queryResult = sort === 'oldest'
-                    ? (await sql`
-                        SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
-                               u.id as reporter_id_u, u.name, u.role
-                        FROM issues i
-                        LEFT JOIN users u ON i.reporter_id = u.id
-                        WHERE i.type = ${type}
-                        ORDER BY i.created_at ASC
-                    `) as any[]
-                    : (await sql`
-                        SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
-                               u.id as reporter_id_u, u.name, u.role
-                        FROM issues i
-                        LEFT JOIN users u ON i.reporter_id = u.id
-                        WHERE i.type = ${type}
-                        ORDER BY i.created_at DESC
-                    `) as any[];
+                queryResult = (await sql`
+                    SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
+                           u.id as reporter_id_u, u.name, u.role
+                    FROM issues i
+                    LEFT JOIN users u ON i.reporter_id = u.id
+                    WHERE i.type = ${type}
+                    ORDER BY i.created_at ${orderClause}
+                `) as any[];
             } else if (status) {
-                queryResult = sort === 'oldest'
-                    ? (await sql`
-                        SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
-                               u.id as reporter_id_u, u.name, u.role
-                        FROM issues i
-                        LEFT JOIN users u ON i.reporter_id = u.id
-                        WHERE i.status = ${status}
-                        ORDER BY i.created_at ASC
-                    `) as any[]
-                    : (await sql`
-                        SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
-                               u.id as reporter_id_u, u.name, u.role
-                        FROM issues i
-                        LEFT JOIN users u ON i.reporter_id = u.id
-                        WHERE i.status = ${status}
-                        ORDER BY i.created_at DESC
-                    `) as any[];
+                queryResult = (await sql`
+                    SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
+                           u.id as reporter_id_u, u.name, u.role
+                    FROM issues i
+                    LEFT JOIN users u ON i.reporter_id = u.id
+                    WHERE i.status = ${status}
+                    ORDER BY i.created_at ${orderClause}
+                `) as any[];
             } else {
-                queryResult = sort === 'oldest'
-                    ? (await sql`
-                        SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
-                               u.id as reporter_id_u, u.name, u.role
-                        FROM issues i
-                        LEFT JOIN users u ON i.reporter_id = u.id
-                        ORDER BY i.created_at ASC
-                    `) as any[]
-                    : (await sql`
-                        SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
-                               u.id as reporter_id_u, u.name, u.role
-                        FROM issues i
-                        LEFT JOIN users u ON i.reporter_id = u.id
-                        ORDER BY i.created_at DESC
-                    `) as any[];
+                queryResult = (await sql`
+                    SELECT i.id, i.title, i.description, i.type, i.status, i.reporter_id, i.created_at, i.updated_at,
+                           u.id as reporter_id_u, u.name, u.role
+                    FROM issues i
+                    LEFT JOIN users u ON i.reporter_id = u.id
+                    ORDER BY i.created_at ${orderClause}
+                `) as any[];
             }
 
             if (!queryResult || queryResult.length === 0) {
                 return [];
             }
 
-            // Map the joined results
-            return queryResult.map(row => ({
-                id: row.id,
-                title: row.title,
-                description: row.description,
-                type: row.type,
-                status: row.status,
+            return queryResult.map((item) => ({
+                id: item.id,
+                title: item.title,
+                description: item.description,
+                type: item.type,
+                status: item.status,
+                reporter_id: item.reporter_id,
+                created_at: item.created_at,
+                updated_at: item.updated_at,
                 reporter: {
-                    id: row.reporter_id_u,
-                    name: row.name,
-                    role: row.role,
+                    id: item.reporter_id_u,
+                    name: item.name,
+                    role: item.role,
                 },
-                created_at: row.created_at,
-                updated_at: row.updated_at,
             }));
         } catch (error) {
-            console.error("Error fetching all issues:", error);
             throw error;
         }
     }
