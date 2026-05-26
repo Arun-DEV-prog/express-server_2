@@ -1,8 +1,3 @@
-
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-    
-
 // src/app.ts
 import express from "express";
 
@@ -745,4 +740,3 @@ if (process.env.NODE_ENV !== "production") {
 export {
   server_default as default
 };
-//# sourceMappingURL=server.js.map
